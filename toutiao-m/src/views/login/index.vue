@@ -12,7 +12,7 @@
          提示：只有表单验证通过时，它才会调用 submit 事件
       3、使用 Field 的 rules 属性定义校验规则
      -->
-        <van-form show-error="false"
+        <van-form :show-error="false"
                   :show-error-message="false"
                   @submit="onLogin"
                   @failed="onFailed">
@@ -47,6 +47,7 @@
 <script>
 import { login } from '@/api/user'
 import { Toast } from 'vant';
+
 export default {
     data() {
         return {
@@ -77,6 +78,10 @@ export default {
                 const { data } = await login(this.mobile, this.code)
                 console.log(data)
                 Toast.success("登录成功")
+                //登录成功后，将登录状态存储到vuex
+                this.$store.commit('setUser', data.data)
+                //登录成功后，(登录操作之前的页面)
+                this.$router.back()
             } catch (err) {
                 console.log(err)
                 Toast.fail("登录失败,手机号或验证码错误")
